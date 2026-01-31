@@ -8,9 +8,14 @@ import { Todo } from './todos/entities/todo.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: process.env.DATABASE_URL, // берем из Vercel
+      url: process.env.DATABASE_URL, // берем pooled connection
       entities: [Todo],
-      synchronize: true, // авто-создание таблиц, для продакшена лучше false
+      synchronize: true, // в продакшене лучше false
+      extra: {
+        ssl: {
+          rejectUnauthorized: false, // нужно для Supabase
+        },
+      },
     }),
     TodosModule,
   ],
