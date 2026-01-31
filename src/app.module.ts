@@ -8,12 +8,13 @@ import { Todo } from './todos/entities/todo.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: 'postgresql://postgres:p%21%24c6H8%24A%40tepjW@aws-1-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true',
-      entities: [Todo],
+      host: 'dpg-d5usijd6ubrc73c0it2g-a',
+      port: 5432,
+      username: 'ocleon_user',
+      password: 'bZVt1CbJvROLLhqX1mH3eyx4WBLxLohG',
+      database: 'ocleon',
+      autoLoadEntities: true,
       synchronize: true,
-      extra: {
-        ssl: { rejectUnauthorized: false }, // если Supabase требует SSL
-      },
     }),
     TodosModule,
   ],
