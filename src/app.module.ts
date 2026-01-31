@@ -6,17 +6,14 @@ import { Todo } from './todos/entities/todo.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({
-      useFactory: () => ({
-        type: 'postgres',
-        url: 'postgresql://postgres:[YOUR-PASSWORD]@db.eajbhliparlkciiepjjx.supabase.co:5432/postgres',
-        entities: [Todo],
-        synchronize: true,
-        extra: {
-          ssl: false, // отключаем SSL для pgBouncer
-          max: 5, // ограничиваем пул
-        },
-      }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
+      entities: [Todo],
+      synchronize: true,
+      extra: {
+        ssl: { rejectUnauthorized: false }, // если Supabase требует SSL
+      },
     }),
     TodosModule,
   ],
