@@ -8,7 +8,7 @@ import { Todo } from './todos/entities/todo.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: 'postgresql://postgres:p!$c6H8$A@tepjW@db.eajbhliparlkciiepjjx.supabase.co:5432/postgres',
+      url: 'postgresql://postgres:p%21%24c6H8%24A%40tepjW@aws-1-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true',
       entities: [Todo],
       synchronize: true,
       extra: {
