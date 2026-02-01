@@ -31,10 +31,10 @@ import { join } from 'path';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: 'dpg-d5usijd6ubrc73c0it2g-a',
       port: 5432,
-      username: 'postgres',
-      password: 'postgres',
+      username: 'ocleon_user',
+      password: 'bZVt1CbJvROLLhqX1mH3eyx4WBLxLohG',
       database: 'ocleon',
       entities: [Todo, User, ArmorType, CuttingJob, Branch, DeviceType, Material, CuttingOrder, Client],
       autoLoadEntities: true,
