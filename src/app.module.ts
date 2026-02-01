@@ -3,20 +3,53 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TodosModule } from './todos/todos.module';
 import { Todo } from './todos/entities/todo.entity';
+import { User } from './users/entities/user.entity';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { ArmortypesModule } from './armortypes/armortypes.module';
+import { ArmorType } from './armortypes/entities/armortype.entity';
+import { DevicetypeModule } from './devicetype/devicetype.module';
+import { ClientsModule } from './client/client.module';
+import { BranchesModule } from './branch/branch.module';
+import { CuttingModule } from './order/order.module';
+import { MaterialModule } from './material/material.module';
+import { CuttingJobModule } from './cutting-job/cutting-job.module';
+import { CuttingJob } from './cutting-job/entities/cutting-job.entity';
+import { Branch } from './branch/entities/branch.entity';
+import { DeviceType } from './devicetype/entities/devicetype.entity';
+import { Material } from './material/entities/material.entity';
+import { CuttingOrder } from './order/entities/order.entity';
+import { Client } from './client/entities/client.entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'), // папка с файлами
+      serveRoot: '/uploads', // URL
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'dpg-d5usijd6ubrc73c0it2g-a',
+      host: 'localhost',
       port: 5432,
-      username: 'ocleon_user',
-      password: 'bZVt1CbJvROLLhqX1mH3eyx4WBLxLohG',
+      username: 'postgres',
+      password: 'postgres',
       database: 'ocleon',
+      entities: [Todo, User, ArmorType, CuttingJob, Branch, DeviceType, Material, CuttingOrder, Client],
       autoLoadEntities: true,
       synchronize: true,
     }),
+    UsersModule,
     TodosModule,
+    AuthModule,
+    ArmortypesModule,
+    DevicetypeModule,
+    ClientsModule,
+    BranchesModule,
+    CuttingModule,
+    MaterialModule,
+    CuttingJobModule
   ],
 })
 export class AppModule {}
