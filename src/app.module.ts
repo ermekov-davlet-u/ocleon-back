@@ -22,6 +22,10 @@ import { CuttingOrder } from './order/entities/order.entity';
 import { Client } from './client/entities/client.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { MaterialReceiptsModule } from './material_receipts/material_receipts.module';
+import { MaterialReceiptItemModule } from './material_receipt_item/material_receipt_item.module';
+import { MaterialReceipt } from './material_receipts/entities/material_receipt.entity';
+import { MaterialReceiptItem } from './material_receipt_item/entities/material_receipt_item.entity';
 
 @Module({
   imports: [
@@ -36,7 +40,19 @@ import { join } from 'path';
       username: 'ocleon_user',
       password: 'bZVt1CbJvROLLhqX1mH3eyx4WBLxLohG',
       database: 'ocleon',
-      entities: [Todo, User, ArmorType, CuttingJob, Branch, DeviceType, Material, CuttingOrder, Client],
+      entities: [
+        Todo,
+        User,
+        ArmorType,
+        CuttingJob,
+        Branch,
+        DeviceType,
+        Material,
+        CuttingOrder,
+        Client,
+        MaterialReceipt,
+        MaterialReceiptItem,
+      ],
       autoLoadEntities: true,
       synchronize: true,
     }),
@@ -49,7 +65,9 @@ import { join } from 'path';
     BranchesModule,
     CuttingModule,
     MaterialModule,
-    CuttingJobModule
+    CuttingJobModule,
+    MaterialReceiptsModule,
+    MaterialReceiptItemModule,
   ],
 })
 export class AppModule {}
