@@ -36,6 +36,7 @@ import { InvoiceItem } from './invoice-item/entities/invoice-item.entity';
       serveRoot: '/uploads', // URL
     }),
     TypeOrmModule.forRoot({
+      type: 'postgres', // ← ВОТ ЭТО ОБЯЗАТЕЛЬНО
       host: 'dpg-d5usijd6ubrc73c0it2g-a',
       port: 5432,
       username: 'ocleon_user',
