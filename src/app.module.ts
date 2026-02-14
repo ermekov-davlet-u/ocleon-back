@@ -36,10 +36,11 @@ import { InvoiceItem } from './invoice-item/entities/invoice-item.entity';
       serveRoot: '/uploads', // URL
     }),
     TypeOrmModule.forRoot({
-      host: 'dpg-d5usijd6ubrc73c0it2g-a',
+      type: 'postgres',
+      host: 'localhost',
       port: 5432,
-      username: 'ocleon_user',
-      password: 'bZVt1CbJvROLLhqX1mH3eyx4WBLxLohG',
+      username: 'postgres',
+      password: 'postgres',
       database: 'ocleon',
       entities: [Todo, User, ArmorType, CuttingJob, Branch, DeviceType, Material, CuttingOrder, Client, Employee,
         Invoice, InvoiceItem
