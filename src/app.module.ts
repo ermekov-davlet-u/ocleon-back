@@ -22,10 +22,10 @@ import { CuttingOrder } from './order/entities/order.entity';
 import { Client } from './client/entities/client.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { MaterialReceiptsModule } from './material_receipts/material_receipts.module';
-import { MaterialReceiptItemModule } from './material_receipt_item/material_receipt_item.module';
-import { MaterialReceipt } from './material_receipts/entities/material_receipt.entity';
-import { MaterialReceiptItem } from './material_receipt_item/entities/material_receipt_item.entity';
+import { EmlpoyeeModule } from './emlpoyee/emlpoyee.module';
+import { Employee } from './emlpoyee/entities/emlpoyee.entity';
+import { InvoiceModule } from './invoice/invoice.module';
+import { InvoiceItemModule } from './invoice-item/invoice-item.module';
 
 @Module({
   imports: [
@@ -35,24 +35,12 @@ import { MaterialReceiptItem } from './material_receipt_item/entities/material_r
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'dpg-d5usijd6ubrc73c0it2g-a',
+      host: 'localhost',
       port: 5432,
-      username: 'ocleon_user',
-      password: 'bZVt1CbJvROLLhqX1mH3eyx4WBLxLohG',
+      username: 'postgres',
+      password: 'postgres',
       database: 'ocleon',
-      entities: [
-        Todo,
-        User,
-        ArmorType,
-        CuttingJob,
-        Branch,
-        DeviceType,
-        Material,
-        CuttingOrder,
-        Client,
-        MaterialReceipt,
-        MaterialReceiptItem,
-      ],
+      entities: [Todo, User, ArmorType, CuttingJob, Branch, DeviceType, Material, CuttingOrder, Client, Employee],
       autoLoadEntities: true,
       synchronize: true,
     }),
@@ -66,8 +54,9 @@ import { MaterialReceiptItem } from './material_receipt_item/entities/material_r
     CuttingModule,
     MaterialModule,
     CuttingJobModule,
-    MaterialReceiptsModule,
-    MaterialReceiptItemModule,
+    EmlpoyeeModule,
+    InvoiceModule,
+    InvoiceItemModule
   ],
 })
 export class AppModule {}
