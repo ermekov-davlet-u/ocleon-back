@@ -7,14 +7,14 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { CuttingService } from './order.service';
 import { CreateCuttingOrderDto } from './dto/create-order.dto';
 import { UpdateCuttingOrderDto } from './dto/update-order.dto';
 import { CuttingOrderStatus } from './entities/order.entity';
+import { CuttingOrderService } from './order.service';
 
 @Controller('cutting-orders')
 export class CuttingController {
-  constructor(private readonly service: CuttingService) {}
+  constructor(private readonly service: CuttingOrderService) {}
 
   @Post()
   create(@Body() dto: CreateCuttingOrderDto) {
@@ -37,10 +37,10 @@ export class CuttingController {
   }
 
   @Patch('/status-change/:id')
-  changeStatus(@Param('id') id: number, @Body() dto: CuttingOrderStatus) {
+  changeStatus(@Param('id') id: number, @Body() dto: any) {
     console.log(id, dto);
     
-    return this.service.updateStatus(+id, dto);
+    return this.service.updateStatus(+id, dto.status);
   }
 
   @Delete(':id')

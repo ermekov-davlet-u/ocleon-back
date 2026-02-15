@@ -1,83 +1,110 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CuttingOrder, CuttingOrderStatus } from './entities/order.entity';
-import { CreateCuttingOrderDto } from './dto/create-order.dto';
-import { UpdateCuttingOrderDto } from './dto/update-order.dto';
 import { CuttingJob } from 'src/cutting-job/entities/cutting-job.entity';
+import { Client } from 'src/client/entities/client.entity';
+import { CuttingOrder, CuttingOrderStatus } from './entities/order.entity';
+import { CreateCuttingOrderDto, UpdateCuttingOrderDto } from './dto/create-order.dto';
 
 @Injectable()
-export class CuttingService {
+export class CuttingOrderService {
   constructor(
     @InjectRepository(CuttingOrder)
-    private readonly repo: Repository<CuttingOrder>,
-  ) { }
+    private readonly orderRepo: Repository<CuttingOrder>,
 
-  async create(dto: CreateCuttingOrderDto) {
-    // Находим полный объект CuttingJob
-    const cuttingJob = await this.repo.manager.findOneOrFail(
-      CuttingJob,
-      { where: { id: dto.cuttingJobId } },
-    );
+    @InjectRepository(CuttingJob)
+    private readonly jobRepo: Repository<CuttingJob>,
 
-    const order = this.repo.create({
-      cuttingJob,
-      quantity: dto.quantity || 1,
+    @InjectRepository(Client)
+    private readonly clientRepo: Repository<Client>,
+  ) {}
+
+  async create(dto: CreateCuttingOrderDto): Promise<CuttingOrder> {
+    // Найти или создать клиента
+    let client = await this.clientRepo.findOne({
+      where: { phone: dto.clientPhone },
     });
 
-    return this.repo.save(order);
+    if (!client) {
+      client = this.clientRepo.create({
+        phone: dto.clientPhone,
+        name: dto.clientName || 'Не указано',
+        email: dto.clientEmail,
+      });
+      await this.clientRepo.save(client);
+    }
+
+    // Найти резку
+    const job = await this.jobRepo.findOne({ where: { id: dto.cuttingJobId } });
+    if (!job) throw new NotFoundException('CuttingJob не найден');
+
+    // Создать заказ резки
+    const order = this.orderRepo.create({
+      cuttingJob: job,
+      client,
+      quantity: dto.quantity,
+      status: CuttingOrderStatus.NEW,
+    });
+
+    return this.orderRepo.save(order);
   }
 
-  findAll() {
-    return this.repo.find({
-      relations: ['cuttingJob'], // eager=true можно убрать, если не нужен
-      order: { id: 'ASC' },
-    });
+   findAll() {
+    return this.orderRepo.find({ order: { createdAt: 'DESC' }, relations: { client: true, cuttingJob: {
+      deviceType: true,
+      material: true,
+      armorType: true
+    } } });
   }
 
-  findOne(id: number) {
-    return this.repo.findOne({
-      where: { id },
-      relations: ['cuttingJob'],
-    });
+  async findOne(id: number) {
+    const order = await this.orderRepo.findOne({ where: { id }, relations: { client: true }});
+    if (!order) throw new NotFoundException('CuttingOrder не найден');
+    return order;
   }
 
   async update(id: number, dto: UpdateCuttingOrderDto) {
-    const order = await this.repo.findOne({ where: { id } });
-    if (!order) return null;
+    const order = await this.findOne(id);
 
     if (dto.cuttingJobId) {
-      order.cuttingJob = await this.repo.manager.findOneOrFail(CuttingJob, {
-        where: { id: dto.cuttingJobId },
-      });
+      const job = await this.jobRepo.findOne({ where: { id: dto.cuttingJobId } });
+      if (!job) throw new NotFoundException('CuttingJob не найден');
+      order.cuttingJob = job;
+    }
+
+    if (dto.clientPhone) {
+      let client = await this.clientRepo.findOne({ where: { phone: dto.clientPhone } });
+      if (!client) {
+        client = this.clientRepo.create({
+          phone: dto.clientPhone,
+          name: dto.clientName || 'Не указано',
+          email: dto.clientEmail,
+        });
+        await this.clientRepo.save(client);
+      }
+      order.client = client;
     }
 
     if (dto.quantity !== undefined) order.quantity = dto.quantity;
+    if (dto.status) order.status = dto.status;
 
-    return this.repo.save(order);
+    return this.orderRepo.save(order);
   }
 
   async updateStatus(id: number, status: CuttingOrderStatus) {
-    const order = await this.repo.findOneBy({ id });
-
-    if (!order) throw new Error('Заказ не найден');
-
-    if (status === CuttingOrderStatus.IN_PROGRESS) {
-      order.startedAt = new Date();
-    }
-
-    if (status === CuttingOrderStatus.DONE) {
-      order.finishedAt = new Date();
-    }
-
+    const order = await this.findOne(id);
     order.status = status;
 
-    return this.repo.save(order);
+    if (status === CuttingOrderStatus.IN_PROGRESS) order.startedAt = new Date();
+    if (status === CuttingOrderStatus.DONE || status === CuttingOrderStatus.REWORK)
+      order.finishedAt = new Date();
+
+    return this.orderRepo.save(order);
   }
 
-
-
-  remove(id: number) {
-    return this.repo.delete(id);
+  async remove(id: number) {
+    const order = await this.findOne(id);
+    return this.orderRepo.remove(order);
   }
+
 }

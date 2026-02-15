@@ -1,11 +1,12 @@
 import { CuttingJob } from 'src/cutting-job/entities/cutting-job.entity';
+import { Client } from 'src/client/entities/client.entity';
 import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 export enum CuttingOrderStatus {
-  NEW = 'NEW',          // создан, еще не запускали
-  IN_PROGRESS = 'IN_PROGRESS', // в работе (после "Провести")
-  DONE = 'DONE',        // выполнено
-  REWORK = 'REWORK',    // брак, повторная резка
+  NEW = 'NEW',          
+  IN_PROGRESS = 'IN_PROGRESS',
+  DONE = 'DONE',
+  REWORK = 'REWORK',
 }
 
 @Entity('cutting_orders')
@@ -16,6 +17,10 @@ export class CuttingOrder {
   @ManyToOne(() => CuttingJob, { eager: true })
   @JoinColumn({ name: 'cutting_job_id' })
   cuttingJob: CuttingJob;
+
+  @ManyToOne(() => Client, { eager: true })
+  @JoinColumn({ name: 'client_id' })
+  client: Client;
 
   @Column({ default: 1 })
   quantity: number;

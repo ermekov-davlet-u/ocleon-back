@@ -55,7 +55,9 @@ export class InvoiceService {
   }
 
   findAll() {
-    return this.invoiceRepo.find();
+    return this.invoiceRepo.find({
+      
+    });
   }
 
   findOne(id: number) {
