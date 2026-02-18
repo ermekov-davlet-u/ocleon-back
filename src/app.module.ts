@@ -28,6 +28,10 @@ import { InvoiceModule } from './invoice/invoice.module';
 import { InvoiceItemModule } from './invoice-item/invoice-item.module';
 import { Invoice } from './invoice/entities/invoice.entity';
 import { InvoiceItem } from './invoice-item/entities/invoice-item.entity';
+import { DiscountModule } from './discount/discount.module';
+import { PartnerModule } from './partner/partner.module';
+import { MaterialListModule } from './material-list/material-list.module';
+import { Discount } from './discount/entities/discount.entity';
 
 @Module({
   imports: [
@@ -37,13 +41,13 @@ import { InvoiceItem } from './invoice-item/entities/invoice-item.entity';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres', // ← ВОТ ЭТО ОБЯЗАТЕЛЬНО
-      host: 'dpg-d5usijd6ubrc73c0it2g-a',
+      host: 'localhost',
       port: 5432,
-      username: 'ocleon_user',
-      password: 'bZVt1CbJvROLLhqX1mH3eyx4WBLxLohG',
+      username: 'postgres',
+      password: 'postgres',
       database: 'ocleon',
       entities: [Todo, User, ArmorType, CuttingJob, Branch, DeviceType, Material, CuttingOrder, Client, Employee,
-        Invoice, InvoiceItem
+        Invoice, InvoiceItem, Discount
       ],
       autoLoadEntities: true,
       synchronize: true,
@@ -60,7 +64,10 @@ import { InvoiceItem } from './invoice-item/entities/invoice-item.entity';
     CuttingJobModule,
     EmlpoyeeModule,
     InvoiceModule,
-    InvoiceItemModule
+    InvoiceItemModule,
+    DiscountModule,
+    PartnerModule,
+    MaterialListModule
   ],
 })
 export class AppModule {}
