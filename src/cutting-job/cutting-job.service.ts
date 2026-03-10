@@ -27,26 +27,50 @@ export class CuttingJobService {
     }
 
     const job = this.repo.create({
-      material: { id: dto.materialId },
       armorType: { id: dto.cuttingTypeId },
       deviceType: { id: dto.deviceTypeId },
       user: { id: firstUser.id }, // передаем объект с id
       filePath: dto.filePath,
       notes: dto.notes,
-      quantity: dto.quantity || 1,
+      price: dto.price || 1,
     });
 
     return this.repo.save(job);
   }
 
 
-  findAll() {
+  // findAll() {
+  //   return this.repo.find({
+  //     relations: {
+  //       armorType: true,
+  //       material: true,
+  //       deviceType: true
+
+  //     },
+  //     order: { id: 'ASC' },
+  //   });
+  // }
+
+  async findAll(filters?: {
+    armorTypeId?: number;
+    materialId?: number;
+    deviceTypeId?: number;
+  }) {
     return this.repo.find({
+      where: {
+        ...(filters?.armorTypeId && {
+          armorType: { id: filters.armorTypeId },
+        }),
+        ...(filters?.materialId && {
+          material: { id: filters.materialId },
+        }),
+        ...(filters?.deviceTypeId && {
+          deviceType: { id: filters.deviceTypeId },
+        }),
+      },
       relations: {
         armorType: true,
-        material: true,
-        deviceType: true
-
+        deviceType: true,
       },
       order: { id: 'ASC' },
     });
@@ -60,44 +84,30 @@ export class CuttingJobService {
   }
 
   async findOneByAll(dto: PreviewCuttingJobDto) {
-    const material = await this.repo.manager.findOne('Material', {
-      where: { id: dto.materialId },
-    });
-
-    const armorType = await this.repo.manager.findOne('ArmorType', {
-      where: { id: dto.cuttingTypeId },
-    });
-
-    const deviceType = await this.repo.manager.findOne('DeviceType', {
-      where: { id: dto.deviceTypeId },
-    });
-
-
     return this.repo.findOne({
       where: {
-        material: {
-          id: dto.materialId
-        },
         armorType: {
-          id: dto.cuttingTypeId
+          id: dto.cuttingTypeId,
         },
         deviceType: {
-          id: dto.deviceTypeId
-        }
+          id: dto.deviceTypeId,
+        },
       },
-      relations: ['material', 'armorType', 'deviceType', 'user'],
+      relations: {
+        armorType: true,
+        deviceType: true,
+      },
     });
   }
 
   update(id: number, dto: UpdateCuttingJobDto) {
     return this.repo.update(id, {
-      material: dto.materialId ? { id: dto.materialId } : undefined,
       armorType: dto.cuttingTypeId ? { id: dto.cuttingTypeId } : undefined,
       deviceType: dto.deviceTypeId ? { id: dto.deviceTypeId } : undefined,
       user: dto.userId ? { id: dto.userId } : undefined,
       filePath: dto.filePath,
       notes: dto.notes,
-      quantity: dto.quantity,
+      price: dto.price,
     });
   }
 

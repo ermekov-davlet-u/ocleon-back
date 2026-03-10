@@ -11,15 +11,12 @@ import { User } from '../../users/entities/user.entity';
 import { Material } from 'src/material/entities/material.entity';
 import { ArmorType } from 'src/armortypes/entities/armortype.entity';
 import { DeviceType } from 'src/devicetype/entities/devicetype.entity';
+import { Branch } from 'src/branch/entities/branch.entity';
 
 @Entity('cutting_jobs')
 export class CuttingJob {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @ManyToOne(() => Material)
-  @JoinColumn({ name: 'material_id' })
-  material: Material;
 
   @ManyToOne(() => ArmorType)
   @JoinColumn({ name: 'cutting_type_id' })
@@ -29,6 +26,8 @@ export class CuttingJob {
   @JoinColumn({ name: 'device_type_id' })
   deviceType: DeviceType;
 
+
+
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User;
@@ -37,7 +36,9 @@ export class CuttingJob {
   filePath?: string; // путь к файлу резки
 
   @Column({ default: 1 })
-  quantity: number;
+  price: number;
+
+
 
   @Column({ type: 'text', nullable: true })
   notes?: string;

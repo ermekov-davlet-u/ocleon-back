@@ -26,7 +26,10 @@ export class Employee {
   @JoinColumn()
   user: User;
 
-  @Column({ type: 'enum', enum: EmployeePosition })
+  @Column({
+    type: 'varchar',
+    length: 20,
+  })
   position: EmployeePosition;
 
   @Column({ type: 'date', nullable: true })

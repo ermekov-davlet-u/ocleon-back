@@ -6,14 +6,19 @@ import {
   Patch,
   Param,
   Delete,
+
 } from '@nestjs/common';
 import { DeviceTypesService } from './devicetype.service';
 import { CreateDeviceTypeDto } from './dto/create-devicetype.dto';
 import { UpdateDevicetypeDto } from './dto/update-devicetype.dto';
 
+
+
 @Controller('device-types')
 export class DeviceTypesController {
   constructor(private readonly service: DeviceTypesService) {}
+
+  
 
   @Post()
   create(@Body() dto: CreateDeviceTypeDto) {

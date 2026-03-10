@@ -1,27 +1,73 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+// discount/entities/discount.entity.ts
 
+import { Client } from 'src/client/entities/client.entity';
+import { CuttingOrder } from 'src/order/entities/order.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-@Entity("discount")
+export enum DiscountType {
+  PERCENT = 'PERCENTAGE', // Процентная скидка (value = %)
+  FIXED   = 'FIXED',   // Фиксированная сумма (value = сом)
+  PRICE_OVERRIDE = 'PRICE_OVERRIDE', // Замена итоговой цены (value = новая цена)
+}
+
+/**
+ * Бизнес-правило скидки:
+ * — MANUAL           → оператор вручную выбирает скидку
+ * — SECOND_WRAPPING  → вторая оклейка = фикс. цена 600 сом
+ * — REFERRAL         → привёл друга = 15%
+ * — SECOND_DEVICE    → второе устройство = 20%
+ */
+export enum DiscountRule {
+  MANUAL           = 'MANUAL',
+  SECOND_WRAPPING  = 'SECOND_WRAPPING',
+  REFERRAL         = 'REFERRAL',
+  SECOND_DEVICE    = 'SECOND_DEVICE',
+}
+
+@Entity('discounts')
 export class Discount {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    dicountcode: string;
+  @Column({ length: 150 })
+  name: string; // Отображаемое название: "Вторая оклейка", "Привёл друга"
 
-    @Column("int")
-    count: number;
+  @Column({ type: 'varchar', length: 30, default: DiscountRule.MANUAL })
+  rule: DiscountRule; // Машиночитаемое правило
 
-    @Column("int")
-    discount: number;
+  @Column({ type: 'varchar', length: 20 })
+  type: DiscountType; // Как считать: PERCENT / FIXED / PRICE_OVERRIDE
 
-    @Column("int")
-    status: number;
+  @Column('decimal', { precision: 10, scale: 2 })
+  value: number; // 15 → 15% | 600 → 600 сом | 600 → новая цена
 
-    @CreateDateColumn({ name: 'created_at' })
-    createdAt: Date;
+  @Column({ length: 255, nullable: true })
+  description?: string;
 
-    @UpdateDateColumn({ name: 'updated_at' })
-    updatedAt: Date;
+  @Column({ default: true })
+  isActive: boolean;
 
+  @Column({ type: 'timestamptz', nullable: true })
+  startDate?: Date;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  endDate?: Date;
+
+  @ManyToOne(() => Client, { nullable: true, eager: true })
+  @JoinColumn({ name: 'client_id' })
+  client?: Client;
+
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
+  updatedAt: Date;
 }

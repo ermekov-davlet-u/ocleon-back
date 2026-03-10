@@ -6,7 +6,10 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { ClientsService } from './client.service';
@@ -14,6 +17,7 @@ import { ClientsService } from './client.service';
 @Controller('clients')
 export class ClientsController {
   constructor(private readonly service: ClientsService) {}
+
 
   @Post()
   create(@Body() dto: CreateClientDto) {
@@ -39,4 +43,5 @@ export class ClientsController {
   remove(@Param('id') id: number) {
     return this.service.remove(+id);
   }
+  
 }

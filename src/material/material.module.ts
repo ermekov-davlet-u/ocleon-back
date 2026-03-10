@@ -1,12 +1,19 @@
 import { Module } from '@nestjs/common';
-import { Material } from './entities/material.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MaterialsController } from './material.controller';
+import { Material } from './entities/material.entity';
+import { MaterialFile } from './entities/material-file.entity';
 import { MaterialsService } from './material.service';
+import { MaterialsController } from './material.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Material])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Material,
+      MaterialFile, // ✅ регистрируем оба репозитория
+    ]),
+  ],
   controllers: [MaterialsController],
-  providers: [MaterialsService],
+  providers:   [MaterialsService],
+  exports:     [MaterialsService],
 })
-export class MaterialModule {}
+export class MaterialsModule {}

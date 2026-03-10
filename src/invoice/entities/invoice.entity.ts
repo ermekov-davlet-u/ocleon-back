@@ -18,7 +18,7 @@ export class Invoice {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'enum', enum: InvoiceType })
+  @Column({ type: 'varchar', enum: InvoiceType, default: InvoiceType.OUTGOING })
   type: InvoiceType;
 
   @Column({ length: 255, nullable: true })

@@ -12,7 +12,7 @@ import { DevicetypeModule } from './devicetype/devicetype.module';
 import { ClientsModule } from './client/client.module';
 import { BranchesModule } from './branch/branch.module';
 import { CuttingModule } from './order/order.module';
-import { MaterialModule } from './material/material.module';
+import { MaterialsModule } from './material/material.module';
 import { CuttingJobModule } from './cutting-job/cutting-job.module';
 import { CuttingJob } from './cutting-job/entities/cutting-job.entity';
 import { Branch } from './branch/entities/branch.entity';
@@ -29,9 +29,9 @@ import { InvoiceItemModule } from './invoice-item/invoice-item.module';
 import { Invoice } from './invoice/entities/invoice.entity';
 import { InvoiceItem } from './invoice-item/entities/invoice-item.entity';
 import { DiscountModule } from './discount/discount.module';
-import { PartnerModule } from './partner/partner.module';
-import { MaterialListModule } from './material-list/material-list.module';
 import { Discount } from './discount/entities/discount.entity';
+import { BookingsModule } from './booking/booking.module';
+import { Booking } from './booking/entities/booking.entity';
 
 @Module({
   imports: [
@@ -46,11 +46,15 @@ import { Discount } from './discount/entities/discount.entity';
       username: 'postgres',
       password: 'postgres',
       database: 'ocleon',
-      entities: [Todo, User, ArmorType, CuttingJob, Branch, DeviceType, Material, CuttingOrder, Client, Employee,
-        Invoice, InvoiceItem, Discount
+      entities: [Todo, User, ArmorType, CuttingJob, Branch, DeviceType, Material, CuttingOrder, Client, Employee, Discount,
+        Invoice, InvoiceItem, Booking
       ],
       autoLoadEntities: true,
       synchronize: true,
+      // options: {
+      //   encrypt: true,                // true для TLS
+      //   trustServerCertificate: true, // доверяем самоподписанному сертификату
+      // },
     }),
     UsersModule,
     TodosModule,
@@ -60,14 +64,13 @@ import { Discount } from './discount/entities/discount.entity';
     ClientsModule,
     BranchesModule,
     CuttingModule,
-    MaterialModule,
+    MaterialsModule,
     CuttingJobModule,
     EmlpoyeeModule,
     InvoiceModule,
     InvoiceItemModule,
     DiscountModule,
-    PartnerModule,
-    MaterialListModule
+    BookingsModule
   ],
 })
 export class AppModule {}

@@ -23,8 +23,8 @@ export class CreateCuttingJobDto {
 
   @IsOptional()
   @IsInt()
-  @Min(1)
-  quantity?: number;
+  @Min(200)
+  price?: number;
 }
 
 

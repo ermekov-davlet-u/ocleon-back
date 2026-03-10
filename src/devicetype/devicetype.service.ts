@@ -12,13 +12,26 @@ export class DeviceTypesService {
     private readonly repo: Repository<DeviceType>,
   ) {}
 
+  async createMany(dtos: any[], batchSize = 1000) {
+    const savedClients: any = [];
+  
+    for (let i = 0; i < dtos.length; i += batchSize) {
+      const batch = dtos.slice(i, i + batchSize);
+      const entities = this.repo.create(batch);
+      const result: any = await this.repo.save(entities);
+      savedClients.push(...result);
+    }
+  
+    return savedClients;
+  }
+
   create(dto: CreateDeviceTypeDto) {
     const deviceType = this.repo.create(dto);
     return this.repo.save(deviceType);
   }
 
   findAll() {
-    return this.repo.find({ order: { id: 'ASC' } });
+    return this.repo.find({ order: { name: 'ASC' } });
   }
 
   findOne(id: number) {

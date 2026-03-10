@@ -4,7 +4,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { MaterialFile } from './material-file.entity';
 
 @Entity('materials')
 export class Material {
@@ -28,6 +30,13 @@ export class Material {
 
   @Column({ default: true })
   isActive: boolean;
+
+  // ✅ Связь с файлами (один материал → много файлов)
+  @OneToMany(() => MaterialFile, (file) => file.material, {
+    eager: true,        // автоматически подгружать файлы
+    cascade: true,
+  })
+  files: MaterialFile[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

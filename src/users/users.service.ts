@@ -17,7 +17,9 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userRepo.find();
+    return this.userRepo.find({relations: {
+      branch: true
+    }});
   }
 
   async findOneById(userId: number): Promise<User | null> {
@@ -25,14 +27,27 @@ export class UserService {
   }
 
   async createUser(body: IUser): Promise<User> {
+    const branch: any = { id: body.branchId };
     return this.userRepo.save({
       userName: body.userName,
       password: body.password,
-    });
+      isRole: body.isRole || 'USER',
+      branch, // связь ManyToOne
+    }as any);
   }
 
   async update(id: number, body: IUser) {
-    return this.userRepo.update(id, body);
+    const updateData: any = {
+      userName: body.userName,
+      password: body.password,
+      isRole: body.isRole,
+    };
+  
+    if (body.branchId) {
+      updateData.branch = { id: body.branchId };
+    }
+  
+    return this.userRepo.update(id, updateData as any);
   }
 
   async findByPayload({ username }: any): Promise<User | null> {

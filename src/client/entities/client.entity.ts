@@ -11,7 +11,7 @@ export class Client {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 100 })
+  @Column({ length: 100, nullable: true })
   name: string;
 
   @Column({ length: 20 })

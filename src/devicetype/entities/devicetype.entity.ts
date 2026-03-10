@@ -11,7 +11,7 @@ export class DeviceType {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 100, unique: true })
+  @Column({ length: 100 })
   name: string;
 
   @Column({ length: 50, nullable: true })

@@ -1,6 +1,6 @@
 import {
   Controller, Post, Body, UploadedFile, UseInterceptors,
-  Get, Patch, Param, Delete
+  Get, Patch, Param, Delete, Query
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -39,6 +39,21 @@ export class CuttingJobController {
     return this.service.create(dto);
   }
 
+  @Get('/for-cutting')
+  findOneByAll(
+    @Query('materialId') materialId: string,
+    @Query('cuttingTypeId') cuttingTypeId: string,
+    @Query('deviceTypeId') deviceTypeId: string,
+  ) {
+
+    
+    return this.service.findOneByAll({
+      materialId: +materialId,
+      cuttingTypeId: +cuttingTypeId,
+      deviceTypeId: +deviceTypeId,
+    });
+  }
+
   @Get()
   findAll() {
     return this.service.findAll();
@@ -49,10 +64,7 @@ export class CuttingJobController {
     return this.service.findOne(+id);
   }
 
-  @Post('/for-cutting')
-  findOneByAll(@Body() dto: PreviewCuttingJobDto) {
-    return this.service.findOneByAll(dto);
-  }
+  
 
   @Patch(':id')
   @UseInterceptors(FileInterceptor('file', {
@@ -76,7 +88,7 @@ export class CuttingJobController {
       deviceTypeId: body.deviceTypeId ? Number(body.deviceTypeId) : undefined,
       userId: body.userId ? Number(body.userId) : undefined,
       notes: body.notes,
-      quantity: body.quantity ? Number(body.quantity) : undefined,
+      price: body.price ? Number(body.price) : undefined,
       filePath: file ? file.path : undefined,
     };
 
